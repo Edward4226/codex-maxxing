@@ -42,9 +42,11 @@ Match the tool to the level of access required:
 - `@chrome` — logged-in browsing, multi-tab work, real session state.
 - `@computer` — pure-GUI applications with no programmatic alternative.
 
+These three are plugins from the `openai-bundled` marketplace (verified on Codex CLI 0.130.0); manage with `codex plugin marketplace`.
+
 ## Connectors (extend reach to where work happens)
 
-Connectors plug the agent into systems where work actually shows up *before* it becomes code: chat, mail, calendar, ticket trackers, docs. They're API-backed (faster, more reliable, survive UI redesigns) and they don't require taking over your screen the way `@computer` does. Prefer a connector whenever one exists for the system you need to touch — `$slack`, `$gmail`, `$calendar` cover the most common ones; add more as you connect them.
+Connectors plug the agent into systems where work actually shows up *before* it becomes code: chat, mail, calendar, ticket trackers, docs. They're API-backed (faster, more reliable, survive UI redesigns) and they don't require taking over your screen the way `@computer` does. Prefer a connector whenever one exists for the system you need to touch — `$gmail`, `$github`, `$notion`, `$figma` ship as curated OpenAI plugins; for `$slack`, `$calendar`, and others, check `codex plugin marketplace` for available sources.
 
 ## Reusable workflows (Skills)
 

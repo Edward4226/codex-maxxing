@@ -107,9 +107,56 @@ After T1 edits, `python3 scripts/check_originality.py` returns OK at HEAD of `op
 
 ---
 
+---
+
+## 2026-05-25 — T2: Codex CLI plugin syntax verification
+
+### Methodology
+
+- Probed local Codex CLI 0.130.0 installation (installed at `/Users/edward/.npm-global/bin/codex`, package `@openai/codex@0.130.0`).
+- Read `~/.codex/config.toml` for plugin registrations.
+- Listed locally cached plugins under `~/.codex/plugins/cache/`.
+- Cross-referenced against the syntax used in the source article.
+
+### Findings — these are REAL plugin invocation tokens
+
+Marketplace inventory on this machine:
+
+| Marketplace | Plugins present locally |
+|---|---|
+| `openai-bundled` | `browser`, `chrome`, `computer-use`, `latex` |
+| `openai-curated` | `figma`, `github`, `gmail`, `notion` |
+| `openai-primary-runtime` | `documents`, `presentations`, `spreadsheets` |
+| custom (git) | `goalnight` |
+
+Direct mapping to syntax used in the source:
+
+- `$browser` → `browser@openai-bundled` (confirmed enabled in `~/.codex/config.toml`)
+- `@chrome` → `chrome@openai-bundled` (confirmed)
+- `@computer` → `computer-use@openai-bundled` (confirmed; runs `Codex Computer Use.app`)
+- `$gmail` → `gmail@openai-curated` (confirmed)
+- `$github`, `$notion`, `$figma` — curated plugins (also confirmed enabled in config)
+- `$slack`, `$calendar` — not present in this machine's local cache. They match the curated-connector pattern and are likely installable via the marketplace, but not literally verified by this audit.
+
+### Implications
+
+**The syntax already in AGENTS.md is correct — these tokens are not the source author's prompt shorthand, they are literal Codex plugin invocations.** No retraction needed.
+
+Two surgical additions help a reader who installs the file:
+
+1. A one-sentence pointer under Tool tiering: these are real plugins from `openai-bundled`, managed via `codex plugin marketplace`.
+2. Connectors paragraph rewritten to name the curated connectors actually shipped (`$gmail`/`$github`/`$notion`/`$figma`) and redirect to `codex plugin marketplace` for the rest.
+
+### Out of scope (deliberately not documented)
+
+- **`$` vs `@` prefix distinction** — undocumented in the CLI help and not cleanly partitioned by marketplace (both `$browser` and `@chrome` sit in `openai-bundled`). A plausible read is "`@` drives a live environment, `$` reads or connects to a service," but this is unverified. Stating it would risk getting it wrong; we leave the prefix as Jason used it and let readers learn the convention from the official docs.
+- **`Appshots`** (the macOS Command-Command "send frontmost window to thread" affordance) — a desktop-app UI feature, not a CLI plugin and not an agent behavior. Omitted from AGENTS.md by design.
+- **`openai-primary-runtime`** plugins (`documents`/`presentations`/`spreadsheets`) — these power the side panel's artifact rendering. The Inspectable surfaces section already covers them generically; no syntax change.
+
+---
+
 ## Pending
 
-- **T2** — verify `$browser` / `@chrome` / `@computer` / `$slack` etc. against the real Codex CLI; outcome may further edit AGENTS.md Tool tiering.
 - **T4** — README rewrite: sync the primitive table to the new section list above; add the originality badge already landed on `main`.
 - **T5** — `gh repo edit` for topics + description.
 - **README originality scope** — the current `check_originality.py` does not scan `README.md`. The README has the highest reader traffic and is also the most likely place for slips. Recommend adding it to `DIRECT_TARGETS` once T4's rewrite stabilises; deferring the decision to that window.
