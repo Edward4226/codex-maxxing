@@ -74,5 +74,7 @@ Then build. Then `make bench-search-p50`. Then declare done — or not.
 
 ## Why this matters
 
-The framework principle: ambition without verification is just a wish.
+> "Ambition without verification is just a wish."
+> — Jason Liu, *Codex-maxxing* (the source this skill is distilled from)
+
 Define how you'll measure success **before** you start.

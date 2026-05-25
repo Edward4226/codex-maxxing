@@ -5,20 +5,24 @@ Inspired by: Jason Liu, "Codex-maxxing" (2026-05-10)
               https://jxnl.co/writing/2026/05/10/codex-maxxing/
 
 This file is an *executable distillation* of the methodology — not a reprint.
-All prose and examples below are original. One short attributed quotation
-appears under "Verified goals" (7 words, well under fair-use threshold).
+All prose and worked examples below are original. One short attributed
+quotation appears under "Verified goals" (7 words, well under the
+fair-use threshold and the only literal sentence retained from the source).
 
-The nine primitives below are concept names from the source; the phrasing,
-worked examples, and rule structure are this file's contribution.
+Jason's primitive names ("durable threads", "compaction", "heartbeats",
+"shared memory", "side panel", etc.) are concept labels and are used as
+such; the rule structure, phrasing, and worked examples are this file's
+contribution.
 -->
 
 ## Operating loop defaults
 
-- **Pin long-lived threads** for any workflow you'll return to (weekly review, ongoing project, recurring debugging). Compact stale turns rather than opening a fresh session each time.
-- **Accept raw input.** Voice transcripts, fragmented thoughts, half-typed notes — work with whatever the user drops in. Don't gate on phrasing quality; restate back what you understood and proceed.
-- **Queue follow-ups while a long task runs.** When the user adds new intent mid-execution, append it to a working list and address it after the current step lands. Don't pause the running task unless the new intent supersedes it.
+- **Compaction first.** Long threads only stay workable if you keep compressing stale turns — boil down old exchanges into shorter summaries so the conversation continues without re-paying for every prior message. Treat it as routine, not last-resort cleanup; without it, durable threads collapse under their own weight.
+- **Pin threads to important workstreams.** Weekly review, an active project, a recurring debugging surface — these get their own long-lived thread you return to. Don't open a fresh session for work you'll touch again.
+- **Accept raw input.** Voice transcripts, fragmented thoughts, half-typed notes — work with whatever the user drops in. Don't gate on phrasing quality; restate what you understood, then proceed.
+- **Steer mid-run.** When the user adds new intent while a long task is executing, append it to a working queue and address it after the current step lands. Pause the running task only if the new intent overrides it.
 
-## Memory as files
+## Memory as files (a.k.a. shared memory)
 
 Persist what you learn into a **versioned file vault**, not into chat history alone:
 
@@ -26,8 +30,9 @@ Persist what you learn into a **versioned file vault**, not into chat history al
 - `people/<name>.md` — what you know about each person
 - `projects/<name>.md` — context for each project (goal, status, blockers)
 - `notes/<topic>.md` — domain knowledge worth keeping
+- `agent/` — instructions you want every future thread on this vault to pick up
 
-Update at natural beats: a new project milestone, a person's role change, an open loop closing. Commit the vault to git; read the weekly diff to audit "what changed in my memory."
+Update at natural beats: a milestone, a role change, an open loop closing. Commit the vault to git; read the weekly diff to audit *what changed in your memory*. The vault is portable across hosts (Codex / Claude Code / a human teammate); chat history is not.
 
 ## Tool tiering
 
@@ -37,7 +42,19 @@ Match the tool to the level of access required:
 - `@chrome` — logged-in browsing, multi-tab work, real session state.
 - `@computer` — pure-GUI applications with no programmatic alternative.
 
-Prefer purpose-built connectors over `@computer` whenever possible — `$slack`, `$gmail`, `$calendar` are API-backed, faster, and survive UI redesigns.
+## Connectors (extend reach to where work happens)
+
+Connectors plug the agent into systems where work actually shows up *before* it becomes code: chat, mail, calendar, ticket trackers, docs. They're API-backed (faster, more reliable, survive UI redesigns) and they don't require taking over your screen the way `@computer` does. Prefer a connector whenever one exists for the system you need to touch — `$slack`, `$gmail`, `$calendar` cover the most common ones; add more as you connect them.
+
+## Reusable workflows (Skills)
+
+When you find yourself re-explaining the same workflow on each new thread, package it as a Skill so future threads can load it on their own. A Skill is a small file with three required parts:
+
+- **Trigger** — phrased as *"use this when the user wants to X"*, not a feature list. If the trigger isn't an *if*-clause the host won't auto-load the skill at the right moment.
+- **Procedure** — the steps a fresh session needs to follow.
+- **Outputs** — what artifacts the skill produces.
+
+Three working skills ship with this repo (`verified-goal`, `chief-of-staff-heartbeat`, `memory-as-files`); install them under `~/.codex/skills/` to see the pattern concretely.
 
 ## Heartbeats (periodic tasks)
 
@@ -64,28 +81,33 @@ Run the oracle at the end. If it fails, the task isn't done — even if the work
 
 Refuse vague goals like "implement this plan.md" unless the plan already includes the oracle. Push back: **"What command will tell us this worked?"**
 
-## Long tasks: pausable, resumable, remote-friendly
+## Remote control (intervene from another device)
 
-Design any task expected to run >5 minutes to survive interrupts:
+Long tasks should let you drop attention and pick it back up from anywhere — desk, laptop, phone. Design for that:
 
-- persist progress to a file every step or two
-- on resume, re-read the checkpoint and continue
-- make decision points explicit so the user can intervene mid-run from anywhere
+- persist state to a file at each non-trivial step so any session can resume the run
+- surface decision points as explicit prompts, never hidden behind a default
+- keep the next-action queue short and visible so anyone with thread access (you on a different device, a teammate, a future session) can read it and act
 
-This lets the task ride out a session timeout, a network blip, or a hand-off to the mobile client.
+Pausability is the means; the point is that the work survives your changing physical context, not just a session timeout.
 
-## Output: prefer interactive artifacts
+## Inspectable surfaces (side panel)
 
-Prefer **single-file interactive `index.html` artifacts** over plain Markdown when the output benefits from inspection or controls — charts, filters, drill-down, forms. Use inline CSS + vanilla JS + a CDN lib if needed. Avoid build chains.
+Produce work in surfaces that can be read, annotated, and operated without leaving the loop — not static documents you scroll past once:
 
-For pure narrative, Markdown is fine.
+- a single-file `index.html` is the lightest default (no server, no build chain)
+- heavier choices when the workload calls for it: Storybook for UI components, Remotion Studio for animation, Slidev for slides, Streamlit for data apps
+- prefer the interactive form whenever a reviewer will want to point at a thing and say "change this"
+
+Markdown is fine for pure narrative. The principle: keep the artifact alive in a surface where review and action sit together.
 
 ---
 
 ## Anti-patterns (don't do these)
 
-- ❌ **Long-task pause** that loses state on restart — always checkpoint.
+- ❌ **Long-task pause** that loses state on restart — always checkpoint to disk.
 - ❌ **Implicit goal** ("make this nicer") — convert to an oracle first.
 - ❌ **Auto-send** anything to humans without a draft step.
 - ❌ **One big SKILL.md** spanning many unrelated topics — split per concern.
 - ❌ **Memory in chat** that doesn't get persisted to a file before session ends.
+- ❌ **Skipping compaction** on long threads — they degrade faster than the cost it would have saved.
