@@ -49,7 +49,7 @@ Jason names twelve primitives across nine sections. Each becomes an executable r
 | 4 | Steering | Operating loop — *Steer mid-run* | |
 | 5 | Shared memory | Memory as files | `memory-as-files` |
 | 6 | Computer / Browser use | Tool tiering | |
-| 7 | Connectors | Connectors *(new section)* | |
+| 7 | Connectors | Connectors | |
 | 8 | Skills | Reusable workflows | |
 | 9 | Remote control | Remote control | |
 | 10 | Heartbeats | Heartbeats | `chief-of-staff-heartbeat` |

@@ -35,7 +35,7 @@ Persist what you learn into a **versioned file vault**, not just into the conver
 
 Update at natural beats. Commit the vault to git; read the weekly diff to audit memory. The vault is portable across hosts (Claude Code / Codex / a human teammate); chat history is not.
 
-> Claude Code's built-in `~/.claude/memory/` directory complements this — use it for *session-bound* hints; use the file vault for *cross-session, cross-tool* knowledge that should outlive any single host.
+> Claude Code's built-in memory (`/remember` and the per-project `MEMORY.md` auto-loaded from `~/.claude/projects/<project>/memory/`) complements this — use it for Claude-Code-specific persistence; use the file vault for tool-agnostic knowledge that should outlive any single host.
 
 ## Tool tiering
 
