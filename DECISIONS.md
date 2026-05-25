@@ -155,8 +155,37 @@ Two surgical additions help a reader who installs the file:
 
 ---
 
+---
+
+## 2026-05-25 — T4: README rewrite + extend originality CI to README
+
+### Methodology
+
+- Audited the old README against the handoff's T4 brief (one-line hook → 60-second install → before/after → primitive map → why-separate → license).
+- Validated the install command by reading current Codex / Claude Code conventions: project-level `AGENTS.md` / `CLAUDE.md` are picked up automatically; user-level globals at `~/.codex/AGENTS.md` / `~/.claude/CLAUDE.md` work the same way.
+- Drafted six before/after rows, each traceable to a specific rule in `AGENTS.md` or a specific worked example in one of the three skills.
+
+### Decisions
+
+1. **Lead with the action, not the description.** The new hook ("Two `cp` commands and your session inherits…") names the operating-loop primitives explicitly and tells the reader what they get in exchange for two commands. The old hook ("Drop-in AGENTS.md…") read like documentation; the new one reads like an offer.
+
+2. **Before/after rows are reproducible.** Every row is a real prompt the reader can paste into a session that has this file installed. The "after" column is derivable from a specific rule (e.g. *"What command will tell us this worked?"* is a literal line in the Verified goals section). No fabricated stats, no testimonials.
+
+3. **Primitive map shows all twelve primitives, not just nine.** The old README inherited the SPEC's 9-primitive compression; the new map matches `DECISIONS.md`'s 12-primitive inventory and flags the three primitives that get a full Skill.
+
+4. **Codex vs Claude table now reflects the T2 verification.** The old row "Browser/web access — `$browser` / `@chrome` syntax" was correct but unverified at the time; the new rows split it into local-web inspection / logged-in browser control / native-GUI control with the specific plugin names that T2 confirmed.
+
+5. **Extended `scripts/check_originality.py` to scan `README.md`.** The READMD has the highest reader traffic and is the most likely place a future contributor copies a sentence verbatim while paraphrasing the agent files. Locking it in CI is the smallest possible enforcement; previously deferred in this DECISIONS doc, now resolved.
+
+### Out of scope (deferred to later phases)
+
+- **Demo GIF / asciinema** (handoff P1 T6) — can be added without restructuring once the README baseline is stable.
+- **Comparison table vs alternative repos** ("Why not awesome-claude-code-rules?") (handoff P1 T8).
+- **Chinese translation of the README** (handoff P2).
+
+---
+
 ## Pending
 
-- **T4** — README rewrite: sync the primitive table to the new section list above; add the originality badge already landed on `main`.
 - **T5** — `gh repo edit` for topics + description.
-- **README originality scope** — the current `check_originality.py` does not scan `README.md`. The README has the highest reader traffic and is also the most likely place for slips. Recommend adding it to `DIRECT_TARGETS` once T4's rewrite stabilises; deferring the decision to that window.
+- **Open PR** for `optimize-content` and coordinate merge order with the (now-landed) `add-originality-ci`.

@@ -45,7 +45,7 @@ NGRAM = 15
 REPO_ROOT = Path(__file__).resolve().parents[1]
 CACHE_PATH = REPO_ROOT / "scripts" / ".cache" / "jason-original.txt"
 
-DIRECT_TARGETS = ("AGENTS.md", "CLAUDE.md")
+DIRECT_TARGETS = ("AGENTS.md", "CLAUDE.md", "README.md")
 GLOB_TARGETS = ("skills/**/*.md",)
 
 # Tags whose text content is not part of the article body.
