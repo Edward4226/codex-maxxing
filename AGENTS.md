@@ -46,7 +46,7 @@ These three are plugins from the `openai-bundled` marketplace (verified on Codex
 
 ## Connectors (extend reach to where work happens)
 
-Connectors plug the agent into systems where work actually shows up *before* it becomes code: chat, mail, calendar, ticket trackers, docs. They're API-backed (faster, more reliable, survive UI redesigns) and they don't require taking over your screen the way `@computer` does. Prefer a connector whenever one exists for the system you need to touch — `$gmail`, `$github`, `$notion`, `$figma` ship as curated OpenAI plugins; for `$slack`, `$calendar`, and others, check `codex plugin marketplace` for available sources.
+Connectors plug the agent into systems where work actually shows up *before* it becomes code: chat, mail, calendar, ticket trackers, docs. They're API-backed (faster, more reliable, survive UI redesigns) and they don't require taking over your screen the way `@computer` does. Prefer a connector whenever one exists for the system you need to touch — `$gmail`, `$github`, `$notion`, `$figma` ship as curated OpenAI plugins; for `$slack`, `$calendar`, and others, see Codex's plugin docs — additional marketplaces are installed via `codex plugin marketplace add <source>` (the CLI itself only exposes `add` / `upgrade` / `remove`, not a search index).
 
 ## Reusable workflows (Skills)
 
