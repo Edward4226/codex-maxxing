@@ -57,10 +57,11 @@ The upstream SPEC §5.2 mapping collapsed Compaction into Durable threads, and f
 
 #### B4. "Side panel" was narrowed to "prefer HTML output"
 
-- **Source**: Side panel has three jobs — inspect artifacts, operate web surfaces, review changes. HTML is one practical tool inside "operate web surfaces" alongside Storybook, Remotion Studio, Slidev, Streamlit.
+- **Source**: Side panel has two H3 sub-sections — Inspect artifacts and Operate web surfaces. HTML is one practical tool inside Operate alongside Storybook, Remotion Studio, Slidev, Streamlit.
 - **Before**: "Output: prefer interactive artifacts" — only the HTML-output angle.
-- **After**: Renamed to "Inspectable surfaces (side panel)" and broadened to capture inspect + operate + review. HTML remains the lightest default; heavier alternatives are named for the workloads they fit.
+- **After**: Renamed to "Inspectable surfaces (side panel)" and broadened to capture both inspect and operate. HTML remains the lightest default; heavier alternatives are named for the workloads they fit.
 - **Why**: The old heading reads like a stylistic preference. The primitive is about *where* the work lives, not what format it's in.
+- **Correction (2026-05-27)**: The first version of this entry claimed three sub-sections including "review changes"; a re-fetch confirms the source has only the two H3s listed above. The AGENTS.md prose ("read, annotated, and operated") was unaffected — it maps cleanly onto inspect + operate. See the 2026-05-27 audit entry below.
 
 #### B5. "Remote control" was renamed to "Long tasks: pausable, resumable, remote-friendly" — broadened past its meaning
 
@@ -182,6 +183,133 @@ Two surgical additions help a reader who installs the file:
 - **Demo GIF / asciinema** (handoff P1 T6) — can be added without restructuring once the README baseline is stable.
 - **Comparison table vs alternative repos** ("Why not awesome-claude-code-rules?") (handoff P1 T8).
 - **Chinese translation of the README** (handoff P2).
+
+---
+
+## 2026-05-27 — Round 2: re-audit + corrections
+
+A second pass against the source article, focused on (a) confirming the
+Round-1 primitive audit on the actual prose rather than DECISIONS' summary
+of it, and (b) probing the Codex CLI directly rather than inferring from
+config files. Three corrections landed plus one optional clarification.
+
+### Methodology
+
+1. Re-fetched the source article with prompts narrowed to specific section
+   structures (Heartbeats H3s, Side panel H3s, H2 order from Memory
+   onwards) — i.e. queries Round 1's general fetch hadn't covered.
+2. Probed Codex CLI 0.130.0 directly: `codex plugin --help`,
+   `codex plugin marketplace --help`, and each leaf subcommand. Read
+   `~/.codex/config.toml`'s `[plugins."*"]` blocks rather than treating
+   the cache directory as a proxy for "enabled".
+3. Walked AGENTS.md / CLAUDE.md section by section against the verified
+   source structure.
+
+### Findings & decisions
+
+#### D1. Section order in AGENTS.md / CLAUDE.md violated the source (and Round 1's stated target)
+
+- **Source H2 order from Memory onwards**: Memory → Computer/Browser →
+  Remote control → Heartbeats → Goals → Side panel.
+- **Round 1 (C7) stated target**: memory → tools → connectors → skills →
+  **remote control → heartbeats → goals** → inspectable surfaces.
+- **Actual file order pre-Round-2**: ... → skills → heartbeats → verified
+  goals → **remote control** → inspectable surfaces. Remote control had
+  drifted to sit *after* Goals, breaking the source's build-up.
+- **Decision**: Move the Remote control section to sit between Reusable
+  workflows (Skills) and Heartbeats in both AGENTS.md and CLAUDE.md.
+- **Why**: This is the source's actual pedagogy — designing tasks for
+  remote intervention is named before the heartbeat mechanism that often
+  triggers such interventions. Restoring the order is no-cost (same
+  paragraphs, no rewording).
+- **Commit**: `f90ac92`.
+
+#### D2. AGENTS.md pointed readers at a CLI command that doesn't search
+
+- **Verified behaviour**: `codex plugin marketplace` accepts only `add`,
+  `upgrade`, `remove` — there is no `list`, `search`, or registry index.
+  `add` takes a concrete source spec (owner/repo[@ref], Git URL, or local
+  directory). The cache directory `~/.codex/plugins/cache/{openai-bundled,
+  openai-curated, ...}` is populated *after* a marketplace is added; it is
+  not a discovery surface.
+- **Before**: Connectors section ended with "for `$slack`, `$calendar`,
+  and others, check `codex plugin marketplace` for available sources".
+  Running that command returns help text, not sources.
+- **After**: "for `$slack`, `$calendar`, and others, see Codex's plugin
+  docs — additional marketplaces are installed via
+  `codex plugin marketplace add <source>` (the CLI itself only exposes
+  `add` / `upgrade` / `remove`, not a search index)".
+- **Why red line was tested**: the project rule forbids strong "Codex
+  supports X" claims absent verification, and prefers "see codex docs"
+  fallback when CLI behaviour is ambiguous. The new wording satisfies
+  both: it points at the docs *and* names the one CLI invocation that is
+  verified, while explicitly disclaiming the absence of a search index.
+- **Commit**: `28f0511`.
+
+#### D3. Round 1 entry B4 listed three Side-panel sub-sections; the source has two
+
+- **Verified structure**: Side panel H2 has exactly two H3 sub-sections —
+  "Inspect artifacts" and "Operate web surfaces". The phrase "review
+  changes" used in the original B4 entry does not appear as an H3.
+- **AGENTS.md prose was unaffected**: "read, annotated, and operated" maps
+  cleanly onto the two real sub-sections (read ⊆ inspect; operated =
+  operate; annotated is the *output* of inspecting, not a third
+  sub-section). No prose change needed.
+- **Decision**: Correct the B4 entry inline (now reflects two H3s) and
+  add a dated correction note pointing back here.
+- **Commit**: `84738ad` (part of the DECISIONS update; this very entry).
+
+#### D4. (Optional clarification) "Memories" as a platform feature was not disambiguated from the vault
+
+- **Source distinction**: Jason's Memory section names two separate
+  things — Codex's first-party `Settings > Personalization > Memories`
+  (cross-thread assistant preferences) plus the opt-in Chronicle
+  preview, *and* the vault approach he uses (per-project file store).
+- **Before**: The AGENTS.md Memory section described only the vault. A
+  reader skimming could believe the rules were about Codex's built-in
+  Memories. (CLAUDE.md already drew the equivalent line against Claude
+  Code's `/remember` + project-level memory in its existing
+  blockquote — no change there.)
+- **After**: Add a single blockquote to the AGENTS.md Memory section
+  naming Memories and Chronicle, and stating that the vault is
+  per-project, diff-reviewable, and portable across hosts.
+- **Why marked optional**: This wasn't a structural deviation; the rules
+  themselves were correct as written. The footnote prevents reader
+  confusion without changing what the rules require.
+- **Commit**: `84738ad`.
+
+### What was checked and found *clean*
+
+- The three companion skills (`verified-goal`, `chief-of-staff-heartbeat`,
+  `memory-as-files`) were re-read against the source's worked examples
+  (Chief of Staff thread, Monitor for feedback, Get a refund, Rich-to-Rust
+  port). All in-skill examples remain original: search backend / p50
+  latency (verified-goal), blog comment questions (heartbeat), Sara/Marcus
+  pipeline handover (memory). No new edits needed.
+- The Heartbeats H2 in the source contains three H3 worked examples
+  (Chief of Staff, Monitor for feedback, Get a refund). Our AGENTS.md
+  Heartbeats section keeps the *primitive* (cadence + source + trigger +
+  action; draft-only default) without lifting any of those three example
+  contexts — exactly the right line to hold.
+- Originality CI ran clean after every commit in this round (six files
+  against 2754 source 15-grams, no overlap).
+
+### Out of scope (still deferred)
+
+- Verifying the prompt-time recognition of `$browser` / `@chrome` /
+  `@computer` inside a real Codex session — i.e. typing the literal
+  tokens into a prompt and confirming the agent dispatches the
+  corresponding plugin. The plugin-enabled status is verified at the
+  config level; recognition at the prompt level remains a level deeper
+  than this audit reached. AGENTS.md does not assert that level of
+  verification (no "Codex confirmed to support `$browser` in prompts"
+  phrasing) so the file stays inside the project's truth boundary.
+- CLAUDE.md line 38's specific path claim about
+  `~/.claude/projects/<project>/memory/` — directory presence verified
+  on this machine, but the structure inside (whether a `MEMORY.md`
+  literally exists) was not exhaustively checked. Out of scope for a
+  *Codex*-focused audit; flagged for whoever does a parallel Claude Code
+  audit.
 
 ---
 
