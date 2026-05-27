@@ -34,6 +34,8 @@ Persist what you learn into a **versioned file vault**, not into chat history al
 
 Update at natural beats: a milestone, a role change, an open loop closing. Commit the vault to git; read the weekly diff to audit *what changed in your memory*. The vault is portable across hosts (Codex / Claude Code / a human teammate); chat history is not.
 
+> Distinct from Codex's first-party `Settings > Personalization > Memories` (and the opt-in Chronicle preview): those keep cross-thread preferences for the assistant; this vault is per-project knowledge you own, diff-reviewable in git, and survives any host swap.
+
 ## Tool tiering
 
 Match the tool to the level of access required:
