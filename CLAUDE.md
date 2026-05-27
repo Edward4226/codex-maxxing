@@ -59,6 +59,16 @@ When the same workflow recurs across sessions — same intent, same shape, diffe
 
 Three working skills ship with this repo (`verified-goal`, `chief-of-staff-heartbeat`, `memory-as-files`); install them under `~/.claude/skills/` for concrete patterns.
 
+## Remote control (intervene from another device)
+
+Long tasks should let you drop attention and pick it back up from anywhere — Claude Code CLI / Desktop / Web. Design for that:
+
+- persist progress to a file at each non-trivial step so any session can resume
+- surface decision points as explicit prompts, never hidden behind a default
+- keep the next-action queue short and visible so anyone with thread access can read it and act
+
+Pausability is the means; the point is that the work survives your changing physical context, not just a session timeout.
+
 ## Scheduled work (Claude Code's heartbeat equivalent)
 
 For monitoring-style tasks — "watch X and act when Y happens" — use `CronCreate` (or the `schedule` skill) with explicit:
@@ -83,16 +93,6 @@ Run the oracle at the end. If it fails, the task isn't done — even if the work
 > "Ambition without verification is just a wish." — _the source, see header_
 
 Refuse vague goals like "implement this plan.md" unless the plan already includes the oracle. Push back: **"What command will tell us this worked?"**
-
-## Remote control (intervene from another device)
-
-Long tasks should let you drop attention and pick it back up from anywhere — Claude Code CLI / Desktop / Web. Design for that:
-
-- persist progress to a file at each non-trivial step so any session can resume
-- surface decision points as explicit prompts, never hidden behind a default
-- keep the next-action queue short and visible so anyone with thread access can read it and act
-
-Pausability is the means; the point is that the work survives your changing physical context, not just a session timeout.
 
 ## Inspectable surfaces (side panel)
 

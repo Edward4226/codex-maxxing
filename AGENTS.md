@@ -58,6 +58,16 @@ When you find yourself re-explaining the same workflow on each new thread, packa
 
 Three working skills ship with this repo (`verified-goal`, `chief-of-staff-heartbeat`, `memory-as-files`); install them under `~/.codex/skills/` to see the pattern concretely.
 
+## Remote control (intervene from another device)
+
+Long tasks should let you drop attention and pick it back up from anywhere — desk, laptop, phone. Design for that:
+
+- persist state to a file at each non-trivial step so any session can resume the run
+- surface decision points as explicit prompts, never hidden behind a default
+- keep the next-action queue short and visible so anyone with thread access (you on a different device, a teammate, a future session) can read it and act
+
+Pausability is the means; the point is that the work survives your changing physical context, not just a session timeout.
+
 ## Heartbeats (periodic tasks)
 
 For monitoring-style work — "watch X and act when Y happens" — set up a heartbeat task with explicit:
@@ -82,16 +92,6 @@ Run the oracle at the end. If it fails, the task isn't done — even if the work
 > "Ambition without verification is just a wish." — _the source, see header_
 
 Refuse vague goals like "implement this plan.md" unless the plan already includes the oracle. Push back: **"What command will tell us this worked?"**
-
-## Remote control (intervene from another device)
-
-Long tasks should let you drop attention and pick it back up from anywhere — desk, laptop, phone. Design for that:
-
-- persist state to a file at each non-trivial step so any session can resume the run
-- surface decision points as explicit prompts, never hidden behind a default
-- keep the next-action queue short and visible so anyone with thread access (you on a different device, a teammate, a future session) can read it and act
-
-Pausability is the means; the point is that the work survives your changing physical context, not just a session timeout.
 
 ## Inspectable surfaces (side panel)
 
